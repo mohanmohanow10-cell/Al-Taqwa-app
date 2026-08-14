@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="so">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#006b4f">
+<title>Al-Taqwa Institute</title>
+<style>
+:root{
+ --g:#006b4f;--g2:#008c68;--bg:#f4f7f6;--card:#fff;--text:#17332b;--muted:#6c7b76;
+ --red:#d9534f;--gold:#d7a62a;--blue:#2563eb;--line:#dfe8e4;--shadow:0 2px 10px #17332b14;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:15px 16px;box-shadow:0 2px 10px #0002}
+header h1{margin:0;font-size:20px}header small{opacity:.9}
+nav{position:sticky;bottom:0;z-index:20;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 2px calc(6px + env(safe-area-inset-bottom))}
+nav button{border:0;background:none;color:#667;padding:7px 2px;font-size:11px}nav button.active{color:var(--g);font-weight:bold}nav span{display:block;font-size:18px;margin-bottom:2px}
+main{padding:14px 14px 90px;max-width:1100px;margin:auto}.screen{display:none}.screen.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:var(--card);border-radius:14px;padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+.stat b{font-size:22px;display:block;color:var(--g);word-break:break-word}.stat small{color:var(--muted)}
+.btn{border:0;border-radius:10px;padding:10px 13px;background:var(--g);color:#fff;font-weight:bold;cursor:pointer}.btn.secondary{background:#e8f2ef;color:var(--g)}.btn.danger{background:#fff0ef;color:var(--red)}.btn.gold{background:#fff7df;color:#8a6400}.btn.blue{background:#eaf0ff;color:#2454c5}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.actions{display:flex;gap:6px;flex-wrap:wrap}
+.search{width:100%;padding:11px;border:1px solid #d5dfdb;border-radius:10px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #d5dfdb;border-radius:9px;background:#fff;font-size:14px}label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px;border-bottom:1px solid #e7ecea;text-align:left;vertical-align:top}th{color:var(--muted);white-space:nowrap}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#e8f2ef;color:var(--g);font-size:11px}.badge.red{background:#fff0ef;color:var(--red)}.badge.gold{background:#fff7df;color:#8a6400}.badge.blue{background:#eaf0ff;color:#2454c5}
+.muted{color:var(--muted)}.dangerText{color:var(--red)}.successText{color:var(--g)}
+.modal{display:none;position:fixed;inset:0;background:#0007;z-index:30;padding:15px;overflow:auto}.modal.show{display:block}.modalbox{max-width:680px;margin:30px auto;background:#fff;border-radius:16px;padding:16px}
+.toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#17332b;color:#fff;padding:10px 14px;border-radius:30px;display:none;z-index:50}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.kpi{padding:11px;border-radius:12px;background:#f8faf9;border:1px solid var(--line)}.kpi b{display:block;font-size:18px;margin-top:4px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.detail{background:#f8faf9;border-radius:10px;padding:10px}.detail small{display:block;color:var(--muted);font-size:11px}.detail b{display:block;margin-top:3px}
+.filtergrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.receipt{font-family:Arial,sans-serif;color:#111;background:#fff;padding:20px;max-width:700px;margin:auto}.receipt h1{text-align:center;color:#006b4f;margin:0}.receipt .center{text-align:center}.receipt table{font-size:14px}.receipt .total{font-size:18px;font-weight:bold}
+@media(min-width:700px){
+ .grid{grid-template-columns:repeat(4,1fr)}.kpis{grid-template-columns:repeat(4,1fr)}
+ nav{position:fixed;left:0;top:64px;bottom:0;width:210px;display:block;padding:20px 10px;border-right:1px solid #ddd;border-top:0}
+ nav button{display:block;width:100%;text-align:left;padding:12px;border-radius:8px}nav span{display:inline;margin-right:8px}
+ main{margin-left:210px;padding-top:24px}
+}
+@media(max-width:560px){.formgrid,.detail-grid,.filtergrid{grid-template-columns:1fr}table{min-width:680px}.card.tableCard{overflow:auto}}
+</style>
+</head>
+<body>
+<header><h1>Al-Taqwa Institute</h1><small>School Management • Offline</small></header>
+
+<main>
+<section id="dashboard" class="screen active">
+  <h2>Dashboard</h2>
+  <div class="grid">
+    <div class="card stat"><b id="sStudents">0</b><small>Total Students</small></div>
+    <div class="card stat"><b id="sFees">$0.00</b><small>Total Fees</small></div>
+    <div class="card stat"><b id="sPaid">$0.00</b><small>Total Paid</small></div>
+    <div class="card stat"><b id="sOutstanding">$0.00</b><small>Total Outstanding</small></div>
+    <div class="card stat"><b id="sExam">$0.00</b><small>Examination Fees</small></div>
+    <div class="card stat"><b id="sExamPaid">$0.00</b><small>Exam Fees Paid</small></div>
+    <div class="card stat"><b id="sExamOutstanding">$0.00</b><small>Exam Outstanding</small></div>
+    <div class="card stat"><b id="sPayments">0</b><small>Payments</small></div>
+  </div>
+
+  <div class="card">
+    <div class="row"><h3>Quick Actions</h3><button class="btn secondary" onclick="openBackup()">Backup / Restore</button></div>
+    <div class="actions">
+      <button class="btn" onclick="openStudent()">+ Add Student</button>
+      <button class="btn" onclick="openPayment()">+ Add Payment</button>
+      <button class="btn blue" onclick="show('students')">Students</button>
+      <button class="btn secondary" onclick="show('fees')">Fees</button>
+      <button class="btn gold" onclick="show('exams')">Examination Fees</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Recent Payments</h3>
+    <div class="tableCard" style="overflow:auto"><table>
+      <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Amount</th><th>Receipt</th></tr></thead>
+      <tbody id="recentRows"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="students" class="screen">
+  <div class="row"><h2>Students</h2><button class="btn" onclick="openStudent()">+ Add Student</button></div>
+  <input id="studentSearch" class="search" placeholder="Search by name, ID or class..." oninput="renderStudents()">
+  <div class="card tableCard" style="overflow:auto"><table>
+    <thead><tr><th>ID</th><th>Full Name</th><th>Gender</th><th>Class</th><th>Parent/Guardian</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody id="studentRows"></tbody>
+  </table></div>
+</section>
+
+<section id="fees" class="screen">
+  <div class="row"><h2>School Fees & Payments</h2><button class="btn" onclick="openPayment()">+ Add Payment</button></div>
+  <div class="card">
+    <div class="filtergrid">
+      <div><label>Search</label><input id="feeSearch" placeholder="Student name / ID..." oninput="renderFees()"></div>
+      <div><label>Fee Type</label><select id="feeTypeFilter" onchange="renderFees()"><option value="">All types</option><option>Registration Fee</option><option>Monthly/School Fee</option><option>Examination Fee</option><option>Other Fee</option></select></div>
+      <div><label>Payment Status</label><select id="feeStatusFilter" onchange="renderFees()"><option value="">All statuses</option><option>Paid</option><option>Partial</option><option>Unpaid</option></select></div>
+      <div><label>Class</label><select id="feeClassFilter" onchange="renderFees()"></select></div>
+    </div>
+  </div>
+  <div class="card tableCard" style="overflow:auto"><table>
+    <thead><tr><th>Date</th><th>Student</th><th>Class</th><th>Fee Type</th><th>Total Fee</th><th>Paid</th><th>Balance</th><th>Status</th><th>Receipt</th></tr></thead>
+    <tbody id="feeRows"></tbody>
+  </table></div>
+</section>
+
+<section id="exams" class="screen">
+  <div class="row"><h2>Examination Fees</h2><button class="btn gold" onclick="openExamPayment()">+ Examination Payment</button></div>
+  <div class="card">
+    <div class="filtergrid">
+      <div><label>Search</label><input id="examSearch" placeholder="Student / exam name..." oninput="renderExams()"></div>
+      <div><label>Status</label><select id="examStatusFilter" onchange="renderExams()"><option value="">All</option><option>Paid</option><option>Partial</option><option>Unpaid</option></select></div>
+    </div>
+  </div>
+  <div class="card tableCard" style="overflow:auto"><table>
+    <thead><tr><th>Date</th><th>Student</th><th>Class</th><th>Examination</th><th>Fee</th><th>Paid</th><th>Balance</th><th>Status</th><th>Receipt</th></tr></thead>
+    <tbody id="examRows"></tbody>
+  </table></div>
+
+  <div class="card">
+    <div class="row"><h3>Exam Results</h3><button class="btn secondary" onclick="openResult()">+ Result</button></div>
+    <div class="tableCard" style="overflow:auto"><table>
+      <thead><tr><th>Student</th><th>Subject</th><th>Marks</th><th>Grade</th></tr></thead>
+      <tbody id="resultRows"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="more" class="screen">
+  <h2>More</h2>
+  <div class="card">
+    <h3>Attendance</h3><p class="muted">Diiwaangeli Present, Absent ama Late.</p><button class="btn" onclick="openAttendance()">Open Attendance</button>
+  </div>
+  <div class="card"><h3>Macallimiin</h3><div class="row"><input id="teacherName" placeholder="Magaca macallinka" style="max-width:65%"><button class="btn" onclick="addTeacher()">Add</button></div><ul id="teacherList"></ul></div>
+  <div class="card"><h3>Fasallo</h3><div class="row"><input id="className" placeholder="Tusaale: Grade 8-A" style="max-width:65%"><button class="btn" onclick="addClass()">Add</button></div><ul id="classList"></ul></div>
+  <div class="card"><h3>Settings & Data</h3><button class="btn secondary" onclick="openBackup()">Backup / Restore</button> <button class="btn danger" onclick="clearData()">Delete all data</button></div>
+</section>
+
+<section id="profile" class="screen">
+  <div class="row"><h2>Student Profile</h2><button class="btn secondary" onclick="show('students')">← Students</button></div>
+  <div id="profileBox"></div>
+</section>
+</main>
+
+<nav>
+ <button class="active" onclick="show('dashboard',this)"><span>🏠</span>Home</button>
+ <button onclick="show('students',this)"><span>👨‍🎓</span>Students</button>
+ <button onclick="show('fees',this)"><span>💰</span>Fees</button>
+ <button onclick="show('exams',this)"><span>📝</span>Exams</button>
+ <button onclick="show('more',this)"><span>☰</span>More</button>
+</nav>
+
+<div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='altaqwa_v2';
+const defaults={students:[],teachers:[],classes:[],fees:[],results:[],attendance:[],examFees:[],receiptSeq:1};
+let db=loadDB();
+let currentStudentId=null;
+
+function loadDB(){
+  try{
+    const old=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(old) return Object.assign({},defaults,old);
+    const legacy=JSON.parse(localStorage.getItem('altaqwa_v1')||'null');
+    if(legacy){
+      const migrated=Object.assign({},defaults,legacy);
+      migrated.examFees=migrated.examFees||[];
+      migrated.receiptSeq=migrated.receiptSeq||1;
+      return migrated;
+    }
+  }catch(e){}
+  return JSON.parse(JSON.stringify(defaults));
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const money=n=>'$'+Number(n||0).toFixed(2);
+function toast(x){let t=document.getElementById('toast');t.textContent=x;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+function show(id,btn){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderAll();
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openModal(html){document.getElementById('modalbox').innerHTML=html;document.getElementById('modal').classList.add('show')}
+function status(total,paid){
+  total=Number(total||0);paid=Number(paid||0);
+  if(paid<=0)return 'Unpaid'; if(paid>=total && total>0)return 'Paid'; return 'Partial';
+}
+function statusBadge(s){return `<span class="badge ${s==='Paid'?'':'red'}">${s}</span>`}
+function nextReceipt(){let n=Number(db.receiptSeq||1);db.receiptSeq=n+1;return 'RCPT-'+new Date().getFullYear()+'-'+String(n).padStart(5,'0')}
+function studentById(id){return db.students.find(s=>s.id===id)}
+
+function openStudent(id=''){
+  const s=id?studentById(id):null;
+  openModal(`<div class="row"><h2>${s?'Edit Student':'Add Student'}</h2><button class="btn secondary" onclick="closeModal()">X</button></div>
+  <div class="formgrid">
+   <div><label>Student ID *</label><input id="sid" value="${esc(s?.id||'')}" placeholder="STU001" ${s?'readonly':''}></div>
+   <div><label>Full Name *</label><input id="sname" value="${esc(s?.name||'')}"></div>
+   <div><label>Gender</label><select id="sgender"><option ${s?.gender==='Lab'?'selected':''}>Lab</option><option ${s?.gender==='Dhedig'?'selected':''}>Dhedig</option></select></div>
+   <div><label>Date of Birth</label><input id="dob" type="date" value="${esc(s?.dob||'')}"></div>
+   <div><label>Class</label><input id="sclass" value="${esc(s?.class||'')}" placeholder="Grade 8-A"></div>
+   <div><label>Status</label><select id="sstatus"><option ${s?.status==='Active'||!s?'selected':''}>Active</option><option ${s?.status==='Inactive'?'selected':''}>Inactive</option></select></div>
+   <div><label>Parent/Guardian Name</label><input id="parent" value="${esc(s?.parent||'')}"></div>
+   <div><label>Parent Phone</label><input id="phone" value="${esc(s?.phone||'')}"></div>
+   <div class="full"><label>Address</label><textarea id="address">${esc(s?.address||'')}</textarea></div>
+   <div><label>Admission Date</label><input id="admission" type="date" value="${esc(s?.admission||new Date().toISOString().slice(0,10))}"></div>
+  </div><br><button class="btn" style="width:100%" onclick="saveStudent('${esc(id)}')">${s?'UPDATE STUDENT':'SAVE STUDENT'}</button>`);
+}
+function saveStudent(editId){
+  const id=sid.value.trim(), name=sname.value.trim();
+  if(!id||!name)return toast('Student ID iyo magaca waa qasab');
+  const duplicate=db.students.some(s=>s.id.toLowerCase()===id.toLowerCase() && s.id!==editId);
+  if(duplicate)return toast('Student ID-kan hore ayuu u jiraa');
+  const obj={id,name,gender:sgender.value,dob:dob.value,class:sclass.value.trim(),parent:parent.value.trim(),phone:phone.value.trim(),address:address.value.trim(),admission:admission.value,status:sstatus.value};
+  if(editId){const i=db.students.findIndex(s=>s.id===editId);if(i>=0)db.students[i]=obj}else db.students.push(obj);
+  save();closeModal();toast(editId?'Student waa la cusbooneysiiyay':'Student waa la keydiyay');
+}
+function renderStudents(){
+  const q=(document.getElementById('studentSearch')?.value||'').toLowerCase();
+  const rows=db.students.filter(s=>(s.name+' '+s.id+' '+s.class+' '+s.parent).toLowerCase().includes(q)).map(s=>`
+   <tr><td>${esc(s.id)}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.gender)}</td><td>${esc(s.class)}</td><td>${esc(s.parent)}<br>${esc(s.phone)}</td>
+   <td>${statusBadge(s.status||'Active')}</td><td><div class="actions">
+   <button class="btn blue" onclick="openProfile('${esc(s.id)}')">View</button>
+   <button class="btn secondary" onclick="openStudent('${esc(s.id)}')">Edit</button>
+   <button class="btn danger" onclick="delStudent('${esc(s.id)}')">Delete</button></div></td></tr>`).join('');
+  document.getElementById('studentRows').innerHTML=rows||'<tr><td colspan="7" class="muted">Weli arday lama gelin.</td></tr>';
+}
+function delStudent(id){
+  if(!confirm('Tirtir ardaygan? Payments iyo examination records-kiisana waa la tirtiri doonaa.'))return;
+  db.students=db.students.filter(x=>x.id!==id);db.fees=db.fees.filter(x=>x.student!==id);db.examFees=db.examFees.filter(x=>x.student!==id);db.results=db.results.filter(x=>x.student!==id);db.attendance=db.attendance.filter(x=>x.student!==id);
+  save();toast('Ardayga waa la tirtiray');
+}
+
+function openPayment(){
+  let opts=db.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.id)})</option>`).join('');
+  if(!opts)return toast('Marka hore arday ku dar');
+  openModal(`<div class="row"><h2>School Fee Payment</h2><button class="btn secondary" onclick="closeModal()">X</button></div>
+  <label>Arday *</label><select id="pstudent">${opts}</select>
+  <div class="formgrid">
+   <div><label>Fee Type</label><select id="ptype"><option>Registration Fee</option><option>Monthly/School Fee</option><option>Examination Fee</option><option>Other Fee</option></select></div>
+   <div><label>Total Fee *</label><input id="totalFee" type="number" step="0.01" min="0" placeholder="100"></div>
+   <div><label>Amount Paid *</label><input id="amount" type="number" step="0.01" min="0" placeholder="20"></div>
+   <div><label>Payment Date</label><input id="pdate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+   <div class="full"><label>Note</label><input id="note" placeholder="Monthly fee"></div>
+  </div><br><button class="btn" style="width:100%" onclick="addPayment()">SAVE PAYMENT & RECEIPT</button>`);
+}
+function addPayment(){
+  if(!pstudent.value||amount.value==='')return toast('Arday iyo lacag geli');
+  const total=Number(totalFee.value||amount.value), paid=Number(amount.value);
+  if(total<0||paid<0||paid>total)return toast('Amount Paid kama badnaan karo Total Fee');
+  const receipt=nextReceipt();
+  db.fees.push({id:Date.now().toString(),student:pstudent.value,type:ptype.value,total,paid,date:pdate.value,note:note.value,receipt});
+  save();closeModal();toast('Payment waa la keydiyay: '+receipt);setTimeout(()=>printReceipt(receipt),250);
+}
+function feeStatus(f){return status(f.total,f.paid)}
+function renderFees(){
+  const q=(document.getElementById('feeSearch')?.value||'').toLowerCase(), typ=document.getElementById('feeTypeFilter')?.value||'', st=document.getElementById('feeStatusFilter')?.value||'', cls=document.getElementById('feeClassFilter')?.value||'';
+  let rows=db.fees.slice().reverse().filter(f=>{
+    const s=studentById(f.student);const okq=(s?.name+' '+f.student).toLowerCase().includes(q);
+    return okq&&(!typ||f.type===typ)&&(!st||feeStatus(f)===st)&&(!cls||s?.class===cls);
+  }).map(f=>{const s=studentById(f.student), bal=Math.max(0,Number(f.total||0)-Number(f.paid||0));return `<tr><td>${esc(f.date)}</td><td>${esc(s?.name||f.student)}<br><small>${esc(f.student)}</small></td><td>${esc(s?.class||'')}</td><td>${esc(f.type||f.note||'Other Fee')}</td><td>${money(f.total)}</td><td>${money(f.paid)}</td><td class="${bal?'dangerText':'successText'}">${money(bal)}</td><td>${statusBadge(feeStatus(f))}</td><td><button class="btn blue" onclick="printReceipt('${esc(f.receipt)}')">${esc(f.receipt||'Receipt')}</button></td></tr>`}).join('');
+  document.getElementById('feeRows').innerHTML=rows||'<tr><td colspan="9" class="muted">Payment ma jiro.</td></tr>';
+}
+function openExamPayment(){
+  let opts=db.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.id)})</option>`).join('');
+  if(!opts)return toast('Marka hore arday ku dar');
+  openModal(`<div class="row"><h2>Examination Fee</h2><button class="btn secondary" onclick="closeModal()">X</button></div>
+  <label>Student *</label><select id="estudent">${opts}</select>
+  <div class="formgrid">
+   <div><label>Examination Name *</label><input id="examName" placeholder="Final Examination 2026"></div>
+   <div><label>Examination Fee *</label><input id="examTotal" type="number" step="0.01" min="0"></div>
+   <div><label>Amount Paid *</label><input id="examPaid" type="number" step="0.01" min="0"></div>
+   <div><label>Payment Date</label><input id="examDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+  </div><br><button class="btn gold" style="width:100%" onclick="addExamPayment()">SAVE EXAM PAYMENT & RECEIPT</button>`);
+}
+function addExamPayment(){
+  if(!estudent.value||!examName.value.trim()||examPaid.value==='')return toast('Xogta buuxi');
+  const total=Number(examTotal.value||examPaid.value),paid=Number(examPaid.value);
+  if(total<0||paid<0||paid>total)return toast('Amount Paid kama badnaan karo Examination Fee');
+  const receipt=nextReceipt();
+  db.examFees.push({id:Date.now().toString(),student:estudent.value,examName:examName.value.trim(),total,paid,date:examDate.value,receipt});
+  save();closeModal();toast('Examination fee waa la keydiyay');setTimeout(()=>printReceipt(receipt),250);
+}
+function renderExams(){
+  const q=(document.getElementById('examSearch')?.value||'').toLowerCase(), st=document.getElementById('examStatusFilter')?.value||'';
+  const rows=db.examFees.slice().reverse().filter(f=>{const s=studentById(f.student);return (s?.name+' '+f.student+' '+f.examName).toLowerCase().includes(q)&&(!st||status(f.total,f.paid)===st)}).map(f=>{
+    const s=studentById(f.student),bal=Math.max(0,Number(f.total||0)-Number(f.paid||0));return `<tr><td>${esc(f.date)}</td><td>${esc(s?.name||f.student)}<br><small>${esc(f.student)}</small></td><td>${esc(s?.class||'')}</td><td>${esc(f.examName)}</td><td>${money(f.total)}</td><td>${money(f.paid)}</td><td class="${bal?'dangerText':'successText'}">${money(bal)}</td><td>${statusBadge(status(f.total,f.paid))}</td><td><button class="btn blue" onclick="printReceipt('${esc(f.receipt)}')">${esc(f.receipt)}</button></td></tr>`}).join('');
+  document.getElementById('examRows').innerHTML=rows||'<tr><td colspan="9" class="muted">Examination fee ma jiro.</td></tr>';
+}
+
+function openProfile(id){
+  currentStudentId=id;show('profile');renderProfile();
+}
+function renderProfile(){
+  const s=studentById(currentStudentId);if(!s)return;
+  const fees=db.fees.filter(f=>f.student===s.id), exams=db.examFees.filter(f=>f.student===s.id);
+  const paid=fees.reduce((a,f)=>a+Number(f.paid||0),0), out=fees.reduce((a,f)=>a+Math.max(0,Number(f.total||0)-Number(f.paid||0)),0);
+  const examFee=exams.reduce((a,f)=>a+Number(f.total||0),0),examPaid=exams.reduce((a,f)=>a+Number(f.paid||0),0),examOut=Math.max(0,examFee-examPaid);
+  document.getElementById('profileBox').innerHTML=`
+   <div class="card"><div class="row"><div><h2>${esc(s.name)}</h2><span class="badge">${esc(s.id)}</span> ${statusBadge(s.status||'Active')}</div><div class="actions"><button class="btn secondary" onclick="openStudent('${esc(s.id)}')">Edit</button><button class="btn danger" onclick="delStudent('${esc(s.id)}')">Delete</button></div></div>
+   <hr><div class="detail-grid">
+    <div class="detail"><small>Gender</small><b>${esc(s.gender)}</b></div><div class="detail"><small>Date of Birth</small><b>${esc(s.dob||'-')}</b></div>
+    <div class="detail"><small>Class</small><b>${esc(s.class||'-')}</b></div><div class="detail"><small>Admission Date</small><b>${esc(s.admission||'-')}</b></div>
+    <div class="detail"><small>Parent/Guardian</small><b>${esc(s.parent||'-')}</b></div><div class="detail"><small>Parent Phone</small><b>${esc(s.phone||'-')}</b></div>
+    <div class="detail" style="grid-column:1/-1"><small>Address</small><b>${esc(s.address||'-')}</b></div>
+   </div></div>
+   <div class="card"><h3>Financial Summary</h3><div class="kpis">
+    <div class="kpi"><small>Total Paid</small><b>${money(paid)}</b></div><div class="kpi"><small>Total Outstanding</small><b class="${out?'dangerText':''}">${money(out)}</b></div>
+    <div class="kpi"><small>Examination Fee</small><b>${money(examFee)}</b></div><div class="kpi"><small>Exam Outstanding</small><b class="${examOut?'dangerText':''}">${money(examOut)}</b></div>
+   </div></div>
+   <div class="card"><h3>Fee History</h3><div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th>Receipt</th></tr></thead><tbody>${fees.slice().reverse().map(f=>`<tr><td>${esc(f.date)}</td><td>${esc(f.type)}</td><td>${money(f.total)}</td><td>${money(f.paid)}</td><td>${money(Math.max(0,f.total-f.paid))}</td><td>${statusBadge(feeStatus(f))}</td><td><button class="btn blue" onclick="printReceipt('${esc(f.receipt)}')">${esc(f.receipt||'-')}</button></td></tr>`).join('')||'<tr><td colspan="7" class="muted">Fee history ma jiro.</td></tr>'}</tbody></table></div></div>
+   <div class="card"><h3>Examination Fees</h3><div style="overflow:auto"><table><thead><tr><th>Date</th><th>Exam</th><th>Fee</th><th>Paid</th><th>Balance</th><th>Status</th><th>Receipt</th></tr></thead><tbody>${exams.slice().reverse().map(f=>`<tr><td>${esc(f.date)}</td><td>${esc(f.examName)}</td><td>${money(f.total)}</td><td>${money(f.paid)}</td><td>${money(Math.max(0,f.total-f.paid))}</td><td>${statusBadge(status(f.total,f.paid))}</td><td><button class="btn blue" onclick="printReceipt('${esc(f.receipt)}')">${esc(f.receipt)}</button></td></tr>`).join('')||'<tr><td colspan="7" class="muted">Examination fee ma jiro.</td></tr>'}</tbody></table></div></div>
+   <div class="card"><h3>Payment History</h3><p class="muted">All payments are listed above with receipt numbers.</p></div>`;
+}
+
+function printReceipt(receiptNo){
+  let f=db.fees.find(x=>x.receipt===receiptNo), ex=db.examFees.find(x=>x.receipt===receiptNo);
+  if(!f&&!ex)return toast('Receipt lama helin');
+  const rec=f||ex,s=studentById(rec.student),type=f?(f.type||'School Fee'):'Examination Fee';
+  const total=Number(rec.total||0),paid=Number(rec.paid||0),bal=Math.max(0,total-paid);
+  const title=f?'School Fee Receipt':'Examination Fee Receipt';
+  const extra=f?(f.note||''):(rec.examName||'');
+  const w=window.open('','_blank','width=760,height=800');
+  if(!w)return toast('Browser-ka ayaa xannibay print window');
+  w.document.write(`<html><head><title>${esc(receiptNo)}</title><style>
+  body{font-family:Arial;margin:0;background:#f5f5f5}.receipt{background:#fff;max-width:700px;margin:30px auto;padding:30px;box-shadow:0 2px 10px #0002}
+  h1{text-align:center;color:#006b4f;margin:0}.center{text-align:center}.meta{display:flex;justify-content:space-between;margin:20px 0;font-size:13px}
+  table{width:100%;border-collapse:collapse}td{padding:10px;border-bottom:1px solid #ddd}td:last-child{text-align:right}.total{font-size:18px;font-weight:bold}
+  .foot{text-align:center;color:#777;margin-top:25px}@media print{body{background:#fff}.receipt{box-shadow:none;margin:0}}
+  </style></head><body><div class="receipt">
+  <h1>AL-TAQWA INSTITUTE</h1><p class="center">${title}</p>
+  <div class="meta"><span><b>Receipt No:</b> ${esc(receiptNo)}</span><span><b>Date:</b> ${esc(rec.date)}</span></div>
+  <table><tr><td>Student Name</td><td>${esc(s?.name||'-')}</td></tr><tr><td>Student ID</td><td>${esc(rec.student)}</td></tr><tr><td>Class</td><td>${esc(s?.class||'-')}</td></tr><tr><td>Payment Type</td><td>${esc(type)}</td></tr><tr><td>Description</td><td>${esc(extra||'-')}</td></tr><tr><td>Total Fee</td><td>${money(total)}</td></tr><tr><td>Amount Paid</td><td>${money(paid)}</td></tr><tr><td class="total">Remaining Balance</td><td class="total">${money(bal)}</td></tr></table>
+  <p class="foot">Thank you • Al-Taqwa Institute</p></div><script>window.onload=()=>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
+function openResult(){let opts=db.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');if(!opts)return toast('Arday ku dar marka hore');openModal(`<div class="row"><h2>Result</h2><button class="btn secondary" onclick="closeModal()">X</button></div><label>Arday</label><select id="rstudent">${opts}</select><label>Subject</label><input id="subject" placeholder="Mathematics"><label>Marks / 100</label><input id="marks" type="number" min="0" max="100"><br><br><button class="btn" style="width:100%" onclick="addResult()">SAVE RESULT</button>`)}
+function addResult(){if(!rstudent.value||!subject.value||marks.value==='')return toast('Xogta buuxi');let m=Number(marks.value);if(m<0||m>100)return toast('Marks waa 0 ilaa 100');db.results.push({student:rstudent.value,subject:subject.value.trim(),marks:m});save();closeModal();toast('Result waa la keydiyay')}
+function grade(m){m=Number(m);return m>=90?'A':m>=80?'B':m>=70?'C':m>=60?'D':'F'}
+function renderResults(){document.getElementById('resultRows').innerHTML=db.results.slice().reverse().map(r=>{let s=studentById(r.student);return `<tr><td>${esc(s?.name||r.student)}</td><td>${esc(r.subject)}</td><td>${r.marks}/100</td><td><span class="badge">${grade(r.marks)}</span></td></tr>`}).join('')||'<tr><td colspan="4" class="muted">Result ma jiro.</td></tr>'}
+function openAttendance(){let opts=db.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');if(!opts)return toast('Arday ku dar marka hore');openModal(`<div class="row"><h2>Attendance</h2><button class="btn secondary" onclick="closeModal()">X</button></div><label>Arday</label><select id="astudent">${opts}</select><label>Taariikh</label><input id="adate" type="date" value="${new Date().toISOString().slice(0,10)}"><label>Status</label><select id="astatus"><option>Present</option><option>Absent</option><option>Late</option></select><br><br><button class="btn" style="width:100%" onclick="addAttendance()">SAVE</button>`)}
+function addAttendance(){if(!astudent.value)return toast('Arday dooro');db.attendance.push({student:astudent.value,date:adate.value,status:astatus.value});save();closeModal();toast('Attendance waa la keydiyay')}
+function addTeacher(){let x=teacherName.value.trim();if(!x)return;db.teachers.push(x);teacherName.value='';save();toast('Macallin waa la daray')}
+function addClass(){let x=className.value.trim();if(!x)return;if(!db.classes.includes(x))db.classes.push(x);className.value='';save();toast('Fasal waa la daray')}
+function renderMore(){document.getElementById('teacherList').innerHTML=db.teachers.map(x=>`<li>${esc(x)}</li>`).join('')||'<li class="muted">Ma jiro</li>';document.getElementById('classList').innerHTML=db.classes.map(x=>`<li>${esc(x)}</li>`).join('')||'<li class="muted">Ma jiro</li>'}
+function renderClassFilters(){
+  const classes=[...new Set(db.students.map(s=>s.class).filter(Boolean).concat(db.classes||[]))].sort();
+  const el=document.getElementById('feeClassFilter');if(!el)return;const old=el.value;
+  el.innerHTML='<option value="">All classes</option>'+classes.map(c=>`<option>${esc(c)}</option>`).join('');el.value=classes.includes(old)?old:'';
+}
+function renderRecent(){
+ const all=[...db.fees.map(f=>Object.assign({kind:'School Fee'},f)),...db.examFees.map(f=>Object.assign({kind:'Examination Fee',type:'Examination Fee'},f))].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,8);
+ document.getElementById('recentRows').innerHTML=all.map(f=>`<tr><td>${esc(f.date)}</td><td>${esc(studentById(f.student)?.name||f.student)}</td><td>${esc(f.type||f.kind)}</td><td>${money(f.paid)}</td><td>${esc(f.receipt||'-')}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">Payment ma jiro.</td></tr>';
+}
+function openBackup(){openModal(`<div class="row"><h2>Backup & Restore</h2><button class="btn secondary" onclick="closeModal()">X</button></div><p class="muted">Backup-ku wuxuu kaydinayaa dhammaan xogta students, fees, examination fees, results, attendance, teachers iyo classes.</p><button class="btn" style="width:100%" onclick="backup()">⬇ Download Backup</button><br><br><label>Restore Backup</label><input id="restoreFile" type="file" accept=".json" onchange="restore(this.files[0])">`)}
+function backup(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Al-Taqwa-Backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function restore(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);db=Object.assign({},defaults,x);save();closeModal();toast('Backup waa la soo celiyay')}catch(e){toast('Backup-ku ma saxna')}};r.readAsText(file)}
+function clearData(){if(confirm('Dhammaan xogta ma tirtirtaa? Tani lama soo celin karo haddii backup uusan jirin.')){db=JSON.parse(JSON.stringify(defaults));save();toast('Xogtii waa la tirtiray')}}
+function renderDashboard(){
+ const fees=db.fees||[], exams=db.examFees||[];
+ const total=fees.reduce((a,x)=>a+Number(x.total||0),0),paid=fees.reduce((a,x)=>a+Number(x.paid||0),0),out=Math.max(0,total-paid);
+ const et=exams.reduce((a,x)=>a+Number(x.total||0),0),ep=exams.reduce((a,x)=>a+Number(x.paid||0),0),eo=Math.max(0,et-ep);
+ document.getElementById('sStudents').textContent=db.students.length;
+ document.getElementById('sFees').textContent=money(total);document.getElementById('sPaid').textContent=money(paid);document.getElementById('sOutstanding').textContent=money(out);
+ document.getElementById('sExam').textContent=money(et);document.getElementById('sExamPaid').textContent=money(ep);document.getElementById('sExamOutstanding').textContent=money(eo);
+ document.getElementById('sPayments').textContent=fees.length+exams.length;renderRecent();
+}
+function renderAll(){renderDashboard();renderStudents();renderClassFilters();renderFees();renderExams();renderResults();renderMore();if(currentStudentId&&document.getElementById('profile')?.classList.contains('active'))renderProfile()}
+renderAll();
+</script>
+</body></html>
